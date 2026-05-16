@@ -5,41 +5,126 @@ import {
   INodeTypeDescription,
 } from 'n8n-workflow';
 
-import { graphqlRequest } from './transport/graphql.request';
+import {
 
-export class ShopeeAffiliate implements INodeType {
+  generateShortLinkProperties,
+  executeGenerateShortLink,
+
+  getOffersProperties,
+  executeGetOffers,
+
+  searchProductsProperties,
+  executeSearchProducts,
+
+} from './actions';
+
+export class ShopeeAffiliate
+  implements INodeType {
+
   description: INodeTypeDescription = {
-    displayName: 'Shopee Affiliate',
-    name: 'shopeeAffiliate',
-    icon: 'file:shopee.svg',
-    group: ['transform'],
-    version: 1,
-    subtitle: '={{$parameter["operation"]}}',
-    description: 'Consume Shopee Affiliate API',
+
+    displayName:
+      'Shopee Affiliate',
+
+    name:
+      'shopeeAffiliate',
+
+    icon:
+      'file:shopee.svg',
+
+    group:
+      ['transform'],
+
+    version:
+      1,
+
+    subtitle:
+      '={{$parameter["operation"]}}',
+
+    description:
+      'Shopee Affiliate API',
+
     defaults: {
-      name: 'Shopee Affiliate',
+      name:
+        'Shopee Affiliate',
     },
-    inputs: ['main'],
-    outputs: ['main'],
+
+    inputs:
+      ['main'],
+
+    outputs:
+      ['main'],
+
     credentials: [
+
       {
-        name: 'shopeeAffiliateApi',
-        required: true,
+        name:
+          'shopeeAffiliateApi',
+
+        required:
+          true,
       },
     ],
+
     properties: [
+
+      /*
+       * Operation
+       */
+
       {
-        displayName: 'Operation',
-        name: 'operation',
-        type: 'options',
+        displayName:
+          'Operation',
+
+        name:
+          'operation',
+
+        type:
+          'options',
+
+        noDataExpression:
+          true,
+
         options: [
+
           {
-            name: 'Get Product Offers',
-            value: 'getOffers',
+            name:
+              'Generate Short Link',
+
+            value:
+              'generateShortLink',
+          },
+
+          {
+            name:
+              'Get Offers',
+
+            value:
+              'getOffers',
+          },
+
+          {
+            name:
+              'Search Products',
+
+            value:
+              'searchProducts',
           },
         ],
-        default: 'getOffers',
+
+        default:
+          'generateShortLink',
       },
+
+      /*
+       * Operations Properties
+       */
+
+      ...generateShortLinkProperties,
+
+      ...getOffersProperties,
+
+      ...searchProductsProperties,
     ],
   };
 
@@ -47,32 +132,85 @@ export class ShopeeAffiliate implements INodeType {
     this: IExecuteFunctions,
   ): Promise<INodeExecutionData[][]> {
 
-    const operation =
-      this.getNodeParameter('operation', 0);
+    const items =
+      this.getInputData();
 
-    let responseData;
+    const returnData:
+      INodeExecutionData[] = [];
 
-    if (operation === 'getOffers') {
+    for (
+      let i = 0;
+      i < items.length;
+      i++
+    ) {
 
-      const body = {
-        query: `
-          query {
-            productOfferV2(limit: 10) {
-              nodes {
-                itemId
-                productName
-                price
-                commissionRate
-                sales
-              }
-            }
-          }
-        `,
-      };
+      const operation =
+        this.getNodeParameter(
+          'operation',
+          i,
+        );
 
-      responseData = await graphqlRequest(this, body);
+      /*
+       * Generate Short Link
+       */
+
+      if (
+        operation ===
+        'generateShortLink'
+      ) {
+
+        const data =
+          await executeGenerateShortLink(
+            this,
+            i,
+          );
+
+        returnData.push({
+          json: data,
+        });
+      }
+
+      /*
+       * Get Offers
+       */
+
+      if (
+        operation ===
+        'getOffers'
+      ) {
+
+        const data =
+          await executeGetOffers(
+            this,
+            i,
+          );
+
+        returnData.push({
+          json: data,
+        });
+      }
+
+      /*
+       * Search Products
+       */
+
+      if (
+        operation ===
+        'searchProducts'
+      ) {
+
+        const data =
+          await executeSearchProducts(
+            this,
+            i,
+          );
+
+        returnData.push({
+          json: data,
+        });
+      }
     }
 
-    return [this.helpers.returnJsonArray(responseData)];
+    return [returnData];
   }
 }

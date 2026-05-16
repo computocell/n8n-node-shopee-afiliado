@@ -25,5 +25,6 @@
   "include": [
     "credentials/**/*.ts",
     "nodes/**/*.ts"
-  ]
+  ],
+  "resolveJsonModule": true
 }

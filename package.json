@@ -15,7 +15,8 @@
   ],
 
   "scripts": {
-    "build": "tsc && gulp build:icons"
+    "build": "tsc && gulp build:icons && cp nodes/ShopeeAffiliate/*.svg dist/nodes/ShopeeAffiliate/"
+    
   },
 
   "n8n": {
