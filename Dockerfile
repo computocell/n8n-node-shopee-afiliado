@@ -10,6 +10,6 @@ RUN npm install --include=dev
 
 RUN npm run build
 
-ENV N8N_CUSTOM_EXTENSIONS=/custom-node/dist
+RUN chown -R node:node /custom-node
 
 USER node

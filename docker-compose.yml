@@ -3,14 +3,18 @@ version: "3.8"
 services:
   n8n:
     build: .
+
     container_name: n8n-shopee
+
     restart: unless-stopped
-    user: "1000:1000"
+
     ports:
       - "5678:5678"
+
     environment:
       - TZ=America/Sao_Paulo
-      - N8N_CUSTOM_EXTENSIONS=/custom-node/dist
+
+      - N8N_CUSTOM_EXTENSIONS=/custom-node
 
     volumes:
       - ./data:/home/node/.n8n
