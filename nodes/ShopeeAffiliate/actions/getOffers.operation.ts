@@ -10,14 +10,21 @@ import { graphqlRequest }
 export const getOffersProperties:
   INodeProperties[] = [
 
+    /*
+     * Keyword
+     */
+
     {
-      displayName: 'Limit',
+      displayName: 'Keyword',
 
-      name: 'limit',
+      name: 'keyword',
 
-      type: 'number',
+      type: 'string',
 
-      default: 10,
+      default: '',
+
+      description:
+        'Busca produtos pelo nome',
 
       displayOptions: {
         show: {
@@ -27,6 +34,258 @@ export const getOffersProperties:
         },
       },
     },
+
+    /*
+     * Shop ID
+     */
+
+    {
+      displayName: 'Shop ID',
+
+      name: 'shopId',
+
+      type: 'number',
+
+      default: 0,
+
+      description:
+        'Filtra produtos de uma loja específica',
+
+      displayOptions: {
+        show: {
+          operation: [
+            'getOffers',
+          ],
+        },
+      },
+    },
+
+    /*
+     * Item ID
+     */
+
+    {
+      displayName: 'Item ID',
+
+      name: 'itemId',
+
+      type: 'number',
+
+      default: 0,
+
+      description:
+        'Busca um produto específico pelo ID',
+
+      displayOptions: {
+        show: {
+          operation: [
+            'getOffers',
+          ],
+        },
+      },
+    },
+
+    /*
+     * Category ID
+     */
+
+    {
+      displayName: 'Category ID',
+
+      name: 'productCatId',
+
+      type: 'number',
+
+      default: 0,
+
+      description:
+        'Filtra produtos por categoria Shopee',
+
+      displayOptions: {
+        show: {
+          operation: [
+            'getOffers',
+          ],
+        },
+      },
+    },
+
+    /*
+     * Sort Type
+     */
+
+    {
+      displayName: 'Sort Type',
+
+      name: 'sortType',
+
+      type: 'options',
+
+      default: 1,
+
+      description:
+        'Define a ordenação dos produtos retornados',
+
+      displayOptions: {
+        show: {
+          operation: [
+            'getOffers',
+          ],
+        },
+      },
+
+      options: [
+
+        {
+          name: 'Relevance',
+
+          value: 1,
+
+          description:
+            'Ordena por relevância da keyword',
+        },
+
+        {
+          name: 'Items Sold',
+
+          value: 2,
+
+          description:
+            'Produtos mais vendidos primeiro',
+        },
+
+        {
+          name: 'Price Desc',
+
+          value: 3,
+
+          description:
+            'Maior preço primeiro',
+        },
+
+        {
+          name: 'Price Asc',
+
+          value: 4,
+
+          description:
+            'Menor preço primeiro',
+        },
+
+        {
+          name: 'Commission Desc',
+
+          value: 5,
+
+          description:
+            'Maior comissão primeiro',
+        },
+      ],
+    },
+
+    /*
+     * Page
+     */
+
+    {
+      displayName: 'Page',
+
+      name: 'page',
+
+      type: 'number',
+
+      default: 1,
+
+      description:
+        'Número da página da consulta',
+
+      displayOptions: {
+        show: {
+          operation: [
+            'getOffers',
+          ],
+        },
+      },
+    },
+
+    /*
+     * Limit
+     */
+
+    {
+      displayName: 'Limit',
+
+      name: 'limit',
+
+      type: 'number',
+
+      default: 10,
+
+      description:
+        'Quantidade máxima de produtos retornados',
+
+      displayOptions: {
+        show: {
+          operation: [
+            'getOffers',
+          ],
+        },
+      },
+    },
+
+    /*
+     * AMS Offer
+     */
+
+    {
+      displayName: 'AMS Offer',
+
+      name: 'isAMSOffer',
+
+      type: 'boolean',
+
+      default: false,
+
+      description:
+        'Filtra produtos que possuem comissão AMS (Commission Xtra)',
+
+      displayOptions: {
+        show: {
+          operation: [
+            'getOffers',
+          ],
+        },
+      },
+    },
+
+    /*
+     * Key Seller
+     */
+
+    {
+      displayName: 'Key Seller',
+
+      name: 'isKeySeller',
+
+      type: 'boolean',
+
+      default: false,
+
+      description:
+        'Filtra apenas produtos de vendedores parceiros principais da Shopee',
+
+      displayOptions: {
+        show: {
+          operation: [
+            'getOffers',
+          ],
+        },
+      },
+    },
+
+    /*
+     * Short Link
+     */
 
     {
       displayName: 'Short Link',
@@ -37,6 +296,9 @@ export const getOffersProperties:
 
       default: true,
 
+      description:
+        'Gera automaticamente links curtos de afiliado. Pode aumentar o tempo da execução devido às requisições extras.',
+
       displayOptions: {
         show: {
           operation: [
@@ -44,10 +306,11 @@ export const getOffersProperties:
           ],
         },
       },
-
-      description:
-        'Gera shortlink afiliado',
     },
+
+    /*
+     * Miniatura
+     */
 
     {
       displayName: 'Miniatura',
@@ -58,6 +321,9 @@ export const getOffersProperties:
 
       default: false,
 
+      description:
+        'Adiciona fórmula IMAGE pronta para Google Sheets',
+
       displayOptions: {
         show: {
           operation: [
@@ -65,9 +331,6 @@ export const getOffersProperties:
           ],
         },
       },
-
-      description:
-        'Retorna fórmula IMAGE para Google Sheets',
     },
   ];
 
@@ -76,15 +339,57 @@ export async function executeGetOffers(
   index: number,
 ) {
 
+  const keyword =
+    context.getNodeParameter(
+      'keyword',
+      index,
+    ) as string;
+
+  const shopId =
+    context.getNodeParameter(
+      'shopId',
+      index,
+    ) as number;
+
+  const itemId =
+    context.getNodeParameter(
+      'itemId',
+      index,
+    ) as number;
+
+  const productCatId =
+    context.getNodeParameter(
+      'productCatId',
+      index,
+    ) as number;
+
+  const sortType =
+    context.getNodeParameter(
+      'sortType',
+      index,
+    ) as number;
+
+  const page =
+    context.getNodeParameter(
+      'page',
+      index,
+    ) as number;
+
   const limit =
     context.getNodeParameter(
       'limit',
       index,
     ) as number;
 
-  const thumbnail =
+  const isAMSOffer =
     context.getNodeParameter(
-      'thumbnail',
+      'isAMSOffer',
+      index,
+    ) as boolean;
+
+  const isKeySeller =
+    context.getNodeParameter(
+      'isKeySeller',
       index,
     ) as boolean;
 
@@ -94,47 +399,128 @@ export async function executeGetOffers(
       index,
     ) as boolean;
 
-  /*
-   * Busca ofertas
-   */
+  const thumbnail =
+    context.getNodeParameter(
+      'thumbnail',
+      index,
+    ) as boolean;
 
-  const offersQuery = `
+  const filters = [
+
+    keyword
+      ? `keyword: "${keyword}"`
+      : null,
+
+    shopId
+      ? `shopId: ${shopId}`
+      : null,
+
+    itemId
+      ? `itemId: ${itemId}`
+      : null,
+
+    productCatId
+      ? `productCatId: ${productCatId}`
+      : null,
+
+    sortType
+      ? `sortType: ${sortType}`
+      : null,
+
+    page
+      ? `page: ${page}`
+      : null,
+
+    limit
+      ? `limit: ${limit}`
+      : null,
+
+    isAMSOffer
+      ? `isAMSOffer: true`
+      : null,
+
+    isKeySeller
+      ? `isKeySeller: true`
+      : null,
+
+  ].filter(Boolean).join('\n');
+
+  const query = `
 		query {
 			productOfferV2(
-				limit: ${limit}
+				${filters}
 			) {
 				nodes {
+
 					itemId
-					commissionRate
-          commission
-					imageUrl
-					price
-          productLink
-					offerLink
+
 					productName
+
+					priceMin
+
+					priceMax
+
+					priceDiscountRate
+
 					sales
-          productCatIds
+
+					commissionRate
+
+					sellerCommissionRate
+
+					shopeeCommissionRate
+
+					commission
+
+					ratingStar
+
+					imageUrl
+
+					shopId
+
+					shopName
+
+					productLink
+
+					offerLink
+
+					productCatIds
+
+					shopType
+
+					periodStartTime
+
+					periodEndTime
+				}
+
+				pageInfo {
+
+					page
+
+					limit
+
+					hasNextPage
 				}
 			}
 		}
 	`;
 
-  const offersResponse =
+  const response =
     await graphqlRequest(
       context,
       {
-        query: offersQuery,
+        query,
       },
     );
 
   if (
-    offersResponse.errors?.length
+    response.errors?.length
   ) {
 
     throw new NodeOperationError(
       context.getNode(),
 
-      offersResponse.errors[0]
+      response.errors[0]
         .message,
 
       {
@@ -143,10 +529,12 @@ export async function executeGetOffers(
     );
   }
 
+  const result =
+    response.data
+      .productOfferV2;
+
   const products =
-    offersResponse.data
-      .productOfferV2
-      .nodes || [];
+    result.nodes || [];
 
   /*
    * Miniatura
@@ -211,7 +599,5 @@ export async function executeGetOffers(
     );
   }
 
-  return {
-    nodes: products,
-  };
+  return result;
 }
