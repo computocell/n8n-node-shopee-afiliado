@@ -14,7 +14,9 @@
   "scripts": {
     "build": "tsc && gulp build:icons && cp nodes/ShopeeAffiliate/*.svg dist/nodes/ShopeeAffiliate/",
     "buildAndRun": "docker compose down && docker compose build --no-cache && docker compose up",
-    "test": "tsc && jest"
+    "test": "tsc && jest",
+    "postinstall": "npx @socketsecurity/socket-patch apply --silent --ecosystems npm",
+    "dependencies": "npx @socketsecurity/socket-patch apply --silent --ecosystems npm"
   },
   "n8n": {
     "n8nNodesApiVersion": 1,
