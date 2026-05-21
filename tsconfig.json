@@ -9,9 +9,9 @@
 
     "moduleResolution": "node",
 
-    "declaration": true,
+    "declaration": false,
 
-    "sourceMap": true,
+    "sourceMap": false,
 
     "outDir": "dist",
 

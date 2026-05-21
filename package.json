@@ -7,18 +7,12 @@
   ],
   "license": "MIT",
   "main": "dist/index.js",
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
   "scripts": {
     "build": "tsc && gulp build:icons && cp nodes/ShopeeAffiliate/*.svg dist/nodes/ShopeeAffiliate/",
-    "buildAndRun": "docker compose down && docker compose build --no-cache && docker compose up",
+    "dev": "docker compose down && docker compose build --no-cache && docker compose up",
     "test": "tsc && jest",
-    "postinstall": "npx @socketsecurity/socket-patch apply --silent --ecosystems npm",
-    "dependencies": "npx @socketsecurity/socket-patch apply --silent --ecosystems npm",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+     "obfuscate": "node ./scripts/obfuscate.js"
 
   },
   "n8n": {
@@ -36,11 +30,13 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.0.0",
     "gulp": "^5.0.1",
+    "javascript-obfuscator": "^5.4.2",
     "jest": "^29.0.0",
     "ts-jest": "^29.0.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "fast-xml-parser": "^4.5.6",
     "n8n-core": "^2.16.1",
     "n8n-workflow": "^2.16.0"
   }

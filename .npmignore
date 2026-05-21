@@ -4,3 +4,7 @@
 !dist/
 !README.md
 !LICENSE
+!package-lock.json
+
+# Caso sourcemaps ainda sejam gerados por engano, exclua-os
+dist/**/*.map
