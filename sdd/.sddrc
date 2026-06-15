@@ -1,0 +1,10 @@
+{
+  "project": "meu-projeto",
+  "version": "1.5.2",
+  "telemetry": {
+    "enabled": true,
+    "anonymous": true,
+    "endpoint": "local"
+  },
+  "lang": "pt-BR"
+}
