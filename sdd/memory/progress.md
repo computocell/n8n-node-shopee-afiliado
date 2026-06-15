@@ -13,7 +13,7 @@ Patch Segurança       [X] done
 |---------|--------|--------|
 | CI Workflow | — | [X] done |
 | Dependabot Config | — | [X] done |
-| Axios Security Patch| — | [X] done |
+| Security Patches (All)| — | [X] done |
 
 ## Próximo passo
 **Aguardando:** Definição de nova feature de evolução.
